@@ -1,8 +1,9 @@
 \documentclass[11pt]{article}
 \usepackage{theme}
 \usepackage{shortcuts}
-% Document parameters
-% Document title
+\usepackage{tikz}
+\usepackage{xcolor}
+
 \title{Assignment 1 (ML for TS) - MVA}
 \author{
 Firstname Lastname \email{youremail1@mail.com} \\ % student 1
@@ -42,16 +43,44 @@ Consider the following Lasso regression:
 \begin{equation}\label{eq:lasso}
     \min_{\beta\in\RR^p} \frac{1}{2}\norm{y-X\beta}^2_2 \quad + \quad \lambda \norm{\beta}_1
 \end{equation}
-where $y\in\RR^n$ is the response vector, $X\in\RR^{n\times p}$ the design matrix, $\beta\in\RR^p$ the vector of regressors and $\lambda>0$ the smoothing parameter.
+where $y\in \RR ^n$ is the response vector, $X\in\RR^{n\times p}$ the design matrix, $\beta\in\RR^p$ the vector of regressors and $\lambda>0$ the smoothing parameter.
 
 Show that there exists $\lambda_{\max}$ such that the minimizer of~\eqref{eq:lasso} is $\mathbf{0}_p$ (a $p$-dimensional vector of zeros) for any $\lambda > \lambda_{\max}$. 
 \end{exercise}
 
-\begin{solution}  % ANSWER HERE
+\begin{solution}
+
+
+Let $\lambda_{\max} = 2 \|^tXy\|$
+
+Let $\epsilon > 0$, we assume that there exists $\beta_{min}\in\RR^p $ with $\|\beta_{min}\|_2 > 0$,  s.t 
 
 \begin{equation}
-    \lambda_{\max} = \dots
+\forall \beta\in\RR^p, \frac{1}{2}\norm{y-X\beta}^2_2 + \lambda_{max} \norm{\beta}_1 \ge \frac{1}{2}\norm{y-X\beta_{min}}^2_2+ \lambda_{max} \norm{\beta_{min}}_1
 \end{equation}
+
+We want to highlight a contraction because 
+\begin{equation}
+\frac{1}{2}\norm{y-X\beta_{min}}^2_2+ \lambda_{max}\norm{\beta_{min}}_1 > \frac{1}{2}\norm{y}_2^2
+\end{equation}
+
+
+In fact by developing the left term and using that $\norm{.}_1\ge \norm{.}_2$
+
+\begin{equation}
+\frac{1}{2}\norm{y-X\beta_{min}}^2_2+ \lambda_{max}\norm{\beta_{min}}_1 \ge \frac{1}{2} (\norm{y}_2^2 + \norm{X\beta_{min}}_2^2 - 2\langle y, X\beta_{min}\rangle) +  \|^tXy\| \norm{\beta_{min}}_2^2 
+\end{equation}
+
+Inside the product scalar, we transpose the matrix $X$ and use Cauchy-Schwarz, 
+\begin{equation}
+\ge \frac{1}{2} (\norm{y}_2^2 + \norm{X\beta_{min}}_2^2 - 2\|^tXy\|\|\beta_{min}\|) +  \|^tXy\| \norm{\beta_{min}}_2^2 
+\end{equation}
+
+Or $\norm{X\beta_{min}}^2_2 \ge 0$ and by assumption $\|\beta_{min}\|_2 > 0$,
+
+We have a contraction, $\|\beta_{min}\|_2 = 0$, and therefore $\beta_{min} = 0_{\RR^p}$
+
+For a larger $\lambda > \lambda_{\max}$, all inequalities hold and there is also $\beta_{min} = 0_{\RR^p}$
 
 \end{solution}
 
@@ -107,6 +136,15 @@ In this question, let $X_n$ ($n=0,\dots,N-1)$ be a Gaussian white noise.
 \end{exercise}
 
 \begin{solution}
+Let's write the autocovariance $\gamma(\tau) = \mathbb{E}(X_nX_{n+\tau})$
+
+For $\tau \not = 0, \gamma(\tau) = \mathbb{E}(X_nX_{n+\tau}) = \mathbb{E}(X_n)\mathbb{E}(X_{n+\tau}) = 0$ because we suppose that $X_n$ has zero mean
+
+For $\tau = 0, \gamma(\tau) = \mathbb{E}(X_n^2) = \sigma^2$ where $\sigma$ is the standard deviation of $X_n$
+
+Therefore, 
+$S(f) = \gamma(0) = \sigma^2$
+
 
 \end{solution}
 
@@ -210,7 +248,126 @@ The \textit{periodogram} is the collection of values $|J(f_0)|^2$, $|J(f_1)|^2$,
 \end{exercise}
 
 \begin{solution}
-    
+    \begin{itemize}
+        \item Let's compute the variance of $\hat\gamma(\tau)$
+            \begin{align}
+                \text{var}(\hat{\gamma}(\tau)) &= \mathbb{E}(\hat \gamma(\tau)^2) -  \mathbb{E}(\hat \gamma(\tau))^2 \\
+                &= \mathbb{E}((\frac{1}{N} \sum_{n=0}^{N-\tau-1} X_n X_{n+\tau})^2) - (\frac{N + \tau}{N}\gamma(\tau))^2\text{ , using definitions and Q4 } \\
+                &= \frac{1}{N^2} \sum_{n,m=0}^{N-\tau-1} \mathbb{E}(X_n X_{n+\tau}X_m X_{m+\tau}) - (\frac{N + \tau}{N}\gamma(\tau))^2 \text{ , using linearity of } \mathbb{E} \\
+                &= \frac{1}{N^2} \sum_{n,m=0}^{N-\tau-1} \mathbb{E}[X_n X_{n+\tau}]\mathbb{E}[X_m X_{m+\tau}] + \mathbb{E}[X_n X_{m}]\mathbb{E}[X_{n+\tau} X_{m+\tau}] \\ & 
+                + \mathbb{E}[X_n X_{m+\tau}]\mathbb{E}[X_m X_{n+\tau}] - (\frac{N + \tau}{N}\gamma(\tau))^2 \text{  using the given hint}
+            \end{align}
+        We can use the fact that $X_n$ is weakly stationary and therefore $\forall m,n, \mathbb{E}(X_n,X_{n+\tau}) = \mathbb{E}(X_m,X_{m+\tau})$ and write this based on $\gamma$
+        \begin{align}
+         \text{var}(\hat{\gamma}(\tau)) &= \frac{1}{N^2} \sum_{n,m=0}^{N-\tau-1} \gamma(n)^2 + \gamma(n-m)^2 + \gamma(n-k-\tau)\gamma(n-m+\tau) - (\frac{N + \tau}{N}\gamma(\tau))^2 \\
+         &= \frac{1}{N^2}\sum_{n=0}^{N-\tau-1}\sum_{m=0}^{N-\tau-1} \gamma(n-m)^2 + \gamma(n-m-\tau)\gamma(n-m+\tau) \\
+         &= \frac{1}{N^2}\sum_{n=0}^{N-\tau-1} \sum_{k=n}^{n-(N-\tau-1)} 
+         \underbrace{\gamma(k)^2 + \gamma(k-\tau)\gamma(k+\tau)}_{\psi(k)} \text{ with change of variable } k = n-m
+        \end{align}
+
+As $\psi(k)$ is independant we can remark that the sum can be rewritten (the graph under explains how the sum should be seen)  
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+% Grid dimensions
+\def\cols{9}
+\def\rows{5}
+
+% Colors for each "layer"
+\definecolor{c1}{RGB}{255,100,100}
+\definecolor{c2}{RGB}{255,180,80}
+\definecolor{c3}{RGB}{120,200,120}
+\definecolor{c4}{RGB}{100,180,255}
+\definecolor{c5}{RGB}{180,130,255}
+
+% Draw grid
+\foreach \x in {0,...,\cols} {
+  \draw[gray!40] (\x,0) -- (\x,\rows);
+}
+\foreach \y in {0,...,\rows} {
+  \draw[gray!40] (0,\y) -- (\cols,\y);
+}
+
+% Fill patterns for "sand layers" (bottom-up this time)
+% Row 1: columns 1–5
+\fill[c1,opacity=0.7] (0,0) rectangle (5,1);
+\node[anchor=east] at (3,0.5) {\small $n=0$};
+
+% Row 2: columns 2–5 + row 1 column 6
+\fill[c2,opacity=0.7] (1,1) rectangle (5,2);
+\fill[c2,opacity=0.7] (5,0) rectangle (6,1);
+\node[anchor=east] at (3.5,1.5) {\small $n=1$};
+
+% Row 3: columns 3–5 + row 2 column 6 + row 1 column 7
+\fill[c3,opacity=0.7] (2,2) rectangle (5,3);
+\fill[c3,opacity=0.7] (5,1) rectangle (6,2);
+\fill[c3,opacity=0.7] (6,0) rectangle (7,1);
+\node[anchor=east] at (4,2.5) {\small $n=2$};
+
+% Row 4: columns 4–5 + row 3 column 6 + row 2 column 7 + row 1 column 8
+\fill[c4,opacity=0.7] (3,3) rectangle (5,4);
+\fill[c4,opacity=0.7] (5,2) rectangle (6,3);
+\fill[c4,opacity=0.7] (6,1) rectangle (7,2);
+\fill[c4,opacity=0.7] (7,0) rectangle (8,1);
+\node[anchor=east] at (4.5,3.5) {\small $n=3$};
+
+% Row 5: column 5 + row 4 column 6 + row 3 column 7 + row 2 column 8 + row 1 column 9
+\fill[c5,opacity=0.7] (4,4) rectangle (5,5);
+\fill[c5,opacity=0.7] (5,3) rectangle (6,4);
+\fill[c5,opacity=0.7] (6,2) rectangle (7,3);
+\fill[c5,opacity=0.7] (7,1) rectangle (8,2);
+\fill[c5,opacity=0.7] (8,0) rectangle (9,1);
+\node[anchor=east] at (6,4.5) {\scriptsize $n=N-\tau -1$};
+
+% Axes
+\draw[-, thick] (0,0) -- (\cols+0.5,0) node[anchor=west] {$k$};
+\draw[-, thick] (0,0) -- (0,\rows+0.5) node[anchor=south] {Number of $\psi(k)$};
+
+% % Optional axis labels (k = 1..9)
+% \foreach \x in {1,...,\cols} {
+%   \node[anchor=north] at (\x-0.5,-0.15) {\small $\scriptstyle k=\x$};
+% }
+
+% % Optional y ticks
+% \foreach \y in {1,...,\rows} {
+%   \node[anchor=east] at (-0.15,\y-0.5) {\small \y};
+% }
+\node[anchor=east] at (-0.3,0.5) {1};
+\node[anchor=east] at (-0.1,4.5) {$N-\tau - 1$};
+
+\node[anchor=south] at (0.5,-0.9) {\small $-(N-\tau-1)$};
+\node[anchor=south] at (8.5,-0.9) {\small $N-\tau-1$};
+
+
+
+\end{tikzpicture}
+\end{center}
+
+    \begin{align}
+         \text{var}(\hat{\gamma}(\tau)) &= \frac{1}{N^2}\sum_{k=-(N-\tau-1)}^{N-\tau-1} (N - \tau - |k|)\;\psi(k)\\
+         &= \frac{1}{N} \sum_{k=-(N-\tau-1)}^{N-\tau-1} (1 - \frac{\tau + |k|}{N})\;( \gamma^2(k) + \gamma(k-\tau)\gamma(k+\tau))
+        \end{align}
+    \item Now we want to show that, for $\epsilon >0$,
+\[
+\mathbb{P}(|\hat \gamma_N(\tau) - \gamma(\tau) | \ge \epsilon) \xrightarrow{N\xrightarrow{}\infty} 0
+\]
+First, let's show that for a $N$ large enough we have 
+\[
+\mathbb{P}(|\hat \gamma_N(\tau) - \gamma(\tau) | \ge \epsilon) \le \mathbb{P}(|\hat \gamma_N(\tau) - \frac{N+\tau}{N}\gamma(\tau) | \ge \epsilon)\; ...
+\]
+Then, let's use Tchebychev inequality for r.v $\hat \gamma(\tau)$
+\begin{align}
+\mathbb{P}(|\hat \gamma_N(\tau) - \frac{N+\tau}{N}\gamma(\tau) | \ge \epsilon) &\le \frac{\text{var}(\hat\gamma(\tau))}{\epsilon^2}
+\\
+&\le \frac{1}{N\epsilon^2}\sum_{k=-(N-\tau-1)}^{N-\tau-1} \underbrace{(1 - \frac{\tau + |k|}{N})}_{\le1}\;( \underbrace{\gamma^2(k)}_{\text{summable family}} + \gamma(k-\tau)\gamma(k+\tau)) \\
+&\le \frac{1}{N\epsilon^2}\bigg(C + \sum_{k=-(N-\tau-1)}^{N-\tau-1} \gamma(k-\tau)\gamma(k+\tau)\bigg)\\
+&\le \frac{1}{N\epsilon^2}\bigg(C + \underbrace{\sum_{k=-N}^{N}\gamma^2(k-\tau)}_{\text{summable family}}\underbrace{\sum_{k=-N}^{N}\gamma^2(k+\tau))}_{\text{summable family}} \bigg) \text{ using Cauchy-Schwarz} \\
+&\le \frac{\tilde C}{N\epsilon^2} \xrightarrow{N\xrightarrow{}\infty} 0
+\end{align}
+
+Therefore $\hat\gamma(\tau)\xrightarrow{proba}\gamma(\tau)$ hence $\hat\gamma(\tau)$ is consistent.
+
+    \end{itemize}
 \end{solution}
 
 Contrary to the correlogram, the periodogram is not consistent.
