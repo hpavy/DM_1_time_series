@@ -102,8 +102,40 @@ Show that
 
 \begin{solution}  % ANSWER HERE
 
+By using the convolution theorem, the Parseval theorem and padding with zero in order to equal the dimension, we have that:
 \begin{equation}
-    \lambda_{\max} = \dots
+    \norm{\mathbf{x}-\sum_{k=1}^K{\mathbf{z}_k*\mathbf{d}_k}}_2^2 + \lambda \sum_{k=1}^K\norm{\mathbf{z}_k}_1 = \norm{\hat{\mathbf{x}}-\sum_{k=1}^K{\hat{\mathbf{z}_k}\odot\hat{\mathbf{d}_k}}}_2^2 + \lambda \sum_{k=1}^K\norm{\hat{\mathbf{z}_k}}_1 
+\end{equation}
+
+Where $\hat{.}$ is the Fourier transform and $\odot$ is the component wise product.
+
+With, 
+$\beta = \begin{bmatrix} \hat{\mathbf{z}}_1 \\ \vdots \\ \hat{\mathbf{z}}_K \end{bmatrix}$, we have that 
+
+\begin{equation}
+\norm{\hat{\mathbf{x}}-\sum_{k=1}^K{\hat{\mathbf{z}_k}\odot\hat{\mathbf{d}_k}}}_2^2 + \lambda \sum_{k=1}^K\norm{\hat{\mathbf{z}_k}}_1 = \norm{\hat{\mathbf{x}}-\sum_{k=1}^K{\hat{\mathbf{z}_k}\odot\hat{\mathbf{d}_k}}}_2^2 + \lambda \norm{\beta}_1
+\end{equation}
+Let's write:
+\begin{equation}
+D = \begin{bmatrix} \mathbf{\hat{d}_1}^T \\ \vdots \\ \mathbf{\hat{d}_K}^T \end{bmatrix}\in \mathbb{R}^{(K*N)}
+\end{equation}
+
+And $X = diag(D,..., D) \in \mathbb{R}^{(K.N)*(K.N)}$
+
+Finally we have that:
+
+\begin{equation}
+\norm{\hat{\mathbf{x}}-\sum_{k=1}^K{\hat{\mathbf{z}_k}\odot\hat{\mathbf{d}_k}}}_2^2 + \lambda \sum_{k=1}^K\norm{\hat{\mathbf{z}_k}}_1 = \norm{\hat{\mathbf{x}}-X\beta}_2^2 + \lambda \norm{\beta}_1
+\end{equation}
+
+Where $X$ is the design matrix and $\beta$ is the response vector.
+
+Finally, according to question 1, there exists $\lambda_{max}$ such that the sparse codes are only 0 for any $\lambda > \lambda_{max}$.
+
+Because our sparse coding problem is a lasso regression, we have:
+
+\begin{equation}
+\lambda_{max}= \norm{X^Ty}_\infty
 \end{equation}
 
 \end{solution}
@@ -163,7 +195,32 @@ for $\tau=0,1,\dots,N-1$ and $\hat{\gamma}(\tau):=\hat{\gamma}(-\tau)$ for $\tau
 \end{exercise}
 
 \begin{solution}
+We can compute:
+\begin{equation}
+   \mathbb{E}[\hat{\gamma}(\tau)] - \gamma({\tau}) 
+   = \mathbb{E}[\frac{1}{N}\sum_{n=0}^{N-\tau-1}X_n X_{n+\tau}] -\gamma(\tau)
+\end{equation}
 
+By linearity of the expectation:
+\begin{equation}
+   \mathbb{E}[\frac{1}{N}\sum_{n=0}^{N-\tau-1}X_n X_{n+\tau}] -\gamma(\tau)
+   = \frac{1}{N}\sum_{n=0}^{N-\tau-1}\mathbb{E}[X_n X_{n+\tau}] -\gamma(\tau)
+\end{equation}
+
+Thus, we have that:
+
+\begin{equation}
+   |\mathbb{E}[\hat{\gamma}(\tau)] - \gamma({\tau})|
+   = \frac{\tau}{N}|\gamma(\tau)|
+\end{equation}
+
+Finally, the equation shows that we have a biased estimator but asymptotically unbiased. 
+
+In order to de-bias the estimator, we could change $\hat{\gamma}$ into:
+
+\begin{equation}
+\hat{\gamma}(\tau):=\frac{1}{N-\tau}\sum_{n=0}^{N-\tau-1}X_nX_{n+\tau}
+\end{equation}
 \end{solution}
 
 \begin{exercise}
@@ -181,7 +238,38 @@ The \textit{periodogram} is the collection of values $|J(f_0)|^2$, $|J(f_1)|^2$,
 \end{exercise}
 
 \begin{solution}
-    
+We have that:
+\begin{equation}
+\end{equation}
+\begin{align}
+   |J(f_k)|^2 
+   &= J(f_k).J(f_k)^* \\
+   &=\frac{1}{N}\sum_{n=0}^{N-1}\sum_{j=0}^{N-1}X_nX_je^{\frac{2ik(n-j)\pi}{N}}
+\end{align}
+
+This sum is the same as creating an array with N-1 raws and N-1 columns where the column j and raw n would be $X_iX_je^{\frac{2i(n-j)\pi}{N}}$
+
+The sum we are computing is the sum of all the elements of this matrix. 
+We can see that $N\hat{\gamma}(\tau)e^{\frac{2i(n-j)\pi}{N}}$ where $\tau=n-j$ will be the sum of the elements of the diagonals going from the coordinate (n, 0) to the coordinate (N, N-n). 
+Same when we are going from (n, 0) up until (N-n, N) following the diagonal. 
+
+With $\gamma(-\tau) = \gamma(\tau)$, at the end our sum is equal to:
+\begin{align}
+|J(f_k)|^2 
+& = \frac{1}{N}\sum_{h=1-N}^{N-1} N\hat{\gamma}(h)e^{\frac{2ikh\pi}{N}}\\
+&=\sum_{h=1-N}^{N-1} \hat{\gamma}(h)e^{\frac{2ikh\pi}{N}}
+\end{align}
+
+Then, we have $f^{(N)}= argmin_{f_k}(|f-f_k|r)$
+
+We have $f^{(N)}\to f$, $\sum_{\tau\in\mathbb{Z}} |\gamma(\tau)| < \infty$ and because $\hat{\gamma}(\tau)$ is asymptotically unbiased, we have:
+
+\begin{equation}
+|J(f^{(N)})|^2 \to S(f)
+\end{equation}
+
+
+Thus $|J(f^{(N)})|^2$ is an asymptotically unbiased estimator of $S(f)$
 \end{solution}
 
 \begin{exercise}\label{ex:wn-exp}
