@@ -474,7 +474,79 @@ In the following question, this is proven for Gaussian white noise, but this hol
 \end{exercise}
 
 \begin{solution}
-    
+The cos and the sin are just scale factors, thus the mean is unchanged for A,B we have:
+
+\begin{equation}
+\mathbb{E}(A(f)) = \mathbb{E}(B(f)) = 0
+\end{equation}
+
+Then:
+\begin{align*}
+\text{Var}(A(f_k)) &= \mathbb{E}\left[A(f_k)^2\right] \\
+&= \mathbb{E}\left[\left(\sum_{n=0}^{N-1} X_n \cos\left(\frac{2\pi kn}{N}\right)\right)^2\right] \\
+&= \mathbb{E}\left[ \sum_{n=0}^{N-1} \sum_{m=0}^{N-1} X_n X_m \cos\left(\frac{2\pi kn}{N}\right) \cos\left(\frac{2\pi km}{N}\right)\right] \\
+&=  \sum_{n=0}^{N-1} \sum_{m=0}^{N-1} \mathbb{E}[X_n X_m] \mathbb{E}\left[\cos\left(\frac{2\pi kn}{N}\right) \cos\left(\frac{2\pi km}{N}\right)\right] \quad \text{(hint)} \\
+&= \sum_{n=0}^{N-1} \mathbb{E}[X_n^2] \mathbb{E}\left[\cos^2\left(\frac{2\pi kn}{N}\right)\right] \quad (\mathbb{E}[X_n X_m] \neq 0 \text{ for } n = m) \\
+&= {\sigma^2}\sum_{n=0}^{N-1} \cos^2\left(\frac{2\pi kn}{N}\right) \\
+&= \frac{\sigma^2}{2} \sum_{n=0}^{N-1} \left(1 + \cos\left(\frac{4\pi kn}{N}\right)\right) \\
+&= \frac{\sigma^2}{2} \left(N + \text{Re}\left(\sum_{n=0}^{N-1} e^{\frac{4i\pi kn}{N}}\right)\right) \\
+&=  \frac{\sigma^2N}{2}
+\end{align*}
+
+In the same way, we have:
+
+\begin{equation}
+Var(B(f_k))=\frac{\sigma^2N}{2}
+\end{equation}
+
+Finally we have found that A and B are just the same Gaussians.
+
+--
+
+Then, we have $J(f) = \frac{1}{N}(A(f) + i B(f))$, thus:
+\begin{equation}
+|J(f_k)|^2 = \frac{1}{N^2}(A(f_k)^2 + B(f_k)^2)
+\end{equation}
+
+Let's compute:
+
+\begin{align}
+\text{cov}(A(f_k), B(f_k)) &= \mathbb{E}\left[A(f_k) B(f_k)\right] \\
+&= \mathbb{E}\left[ -\sum_{n=0}^{N-1} \sum_{m=0}^{N-1} X_n X_m \cos \left(\frac{2 \pi k n}{N}\right) \sin \left(\frac{2 \pi k m}{N}\right) \right] \\
+&= -\sum_{n=0}^{N-1} \sum_{m=0}^{N-1} \mathbb{E}\left[X_n X_m\right] \mathbb{E}\left[\cos \left(\frac{2 \pi k n}{N}\right) \sin \left(\frac{2 \pi k m}{N}\right)\right] \quad (\text{hint}) \\
+&= -\sum_{n=0}^{N-1} \mathbb{E}\left[X_n^2\right] \cos \left(\frac{2 \pi k n}{N}\right) \sin \left(\frac{2 \pi k n}{N}\right) \quad (\mathbb{E}[X_n X_m] \neq 0 \text{ for } n = m) \\
+&= -\frac{\sigma^2}{2} \sum_{n=0}^{N-1} \sin \left(\frac{4 \pi k n}{N}\right) \\
+&= -\frac{\sigma^2}{2} \text{Im} \left( \sum_{n=0}^{N-1} e^{\frac{4 i \pi k n}{N}} \right)\\
+&= 0
+\end{align}
+
+Since \(A(f_k)\) and \(B(f_k)\) are independent Gaussian random variables, $|J(f_k)|^2$ is a chi squared distribution of rank 2.
+
+-- 
+
+We know that if \( X \sim \mathcal{N}(0, \sigma^2) \), then \( \mathbb{E}[X^4] = 3\sigma^4 \). We then have \(\text{Var}(X^2) = \mathbb{E}[X^4] - \mathbb{E}[X^2]^2 = 2\sigma^4\).
+
+\begin{align}
+\text{Var}(|J(f_k)|^2) &= \frac{1}{N^2} \left( \text{Var}(A(f_k)^2) + \text{Var}(B(f_k)^2) \right) \quad \text{as } A^2 \text{ and } B^2 \text{ are i.i.d.} \\
+&= \frac{1}{N^2} \left( 2 \left( \sigma \sqrt{\frac{N}{2}} \right)^4 + 2 \left( \sigma \sqrt{\frac{N}{2}} \right)^4 \right) \quad \text{based on the previous remark} \\
+&= \sigma^4
+\end{align}
+
+Furthermore, we can compute the expectation of \(|J(f_k)|^2\):
+
+\begin{align}
+\mathbb{E}[|J(f_k)|^2] &= \frac{1}{N} \left( \mathbb{E}[A(f_k)^2] + \mathbb{E}[B(f_k)^2] \right) \\
+&= \frac{1}{N} \left( \text{Var}(A(f_k)) + \text{Var}(B(f_k)) \right) \\
+&= \sigma^2
+\end{align}
+
+The distribution of \(|J(f_k)|^2\) doesn't depend on \( N \). This means that $\mathbb{E}(|J(f_k)|^2) $ and $\mathbb{V}(|J(f_k)|^2)$  are not changing with N, i.e. \(|J(f_k)|^2\) is not consistent.
+
+--
+
+piche
+
+
 \end{solution}
 
 \begin{exercise}\label{q:barlett}
