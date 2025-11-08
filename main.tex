@@ -534,7 +534,11 @@ Combine the DTW and a k-neighbors classifier to classify each step. Find the opt
 \end{exercise}
 
 \begin{solution}
+We can see that the optimal number of neighbors is 5 with a validation f1 score of 0.77. However the associated f1-score with the test dataset is 0.46.
 
+Our model is not generalizing really well on unseen data.
+
+Maybe we could try to combine more data from the accelerometer in order to have a better result.
 \end{solution}
 
 \newpage
@@ -546,12 +550,12 @@ Display on Figure~\ref{fig:class-errors} a badly classified step from each class
 \begin{figure}
     \centering
     \begin{minipage}[t]{\textwidth}
-    \centerline{\includegraphics[width=0.6\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=0.6\textwidth]{images/healty.png}}
     \centerline{Badly classified healthy step}
     \end{minipage}
     \vskip1em
     \begin{minipage}[t]{\textwidth}
-    \centerline{\includegraphics[width=0.6\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=0.6\textwidth]{images/unhealty.png}}
     \centerline{Badly classified non-healthy step}
     \end{minipage}
     \vskip1em
