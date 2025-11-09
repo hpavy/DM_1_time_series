@@ -553,8 +553,161 @@ The distribution of \(|J(f_k)|^2\) doesn't depend on \( N \). This means that $\
 
 --
 
-piche
 
+\noindent
+We have:
+\[
+\mathbb{E}[A(f_k)^2 A(f_l)^2] = 
+\mathbb{E} \left[ 
+\sum_{n,m,s,t=0}^{N-1} 
+X_n X_m X_s X_t 
+\cos \frac{2\pi kn}{N}
+\cos \frac{2\pi km}{N}
+\cos \frac{2\pi ls}{N}
+\cos \frac{2\pi lt}{N}
+\right]
+\]
+
+\[
+= \sum_{n,m,s,t=0}^{N-1}
+\cos \frac{2\pi kn}{N}
+\cos \frac{2\pi km}{N}
+\cos \frac{2\pi ls}{N}
+\cos \frac{2\pi lt}{N}
+\big( \mathbb{E}[X_n X_m X_s X_t]
+\big)
+\]
+\[
+= \sum_{n,m,s,t=0}^{N-1}
+\cos \frac{2\pi kn}{N}
+\cos \frac{2\pi km}{N}
+\cos \frac{2\pi ls}{N}
+\cos \frac{2\pi lt}{N}
+\left( 
+\mathbb{E}[X_n X_m] \mathbb{E}[X_s X_t] +
+\mathbb{E}[X_n X_s] \mathbb{E}[X_m X_t] +
+\mathbb{E}[X_n X_t] \mathbb{E}[X_m X_s]
+\right)
+\]
+
+\noindent
+The first term of the parenthesis leads to study cases where $n = m$ and $s = t$:
+\[
+\sum_{n,s}
+\cos^2 \left( \frac{2\pi kn}{N} \right)
+\cos^2 \left( \frac{2\pi ls}{N} \right)
+\mathbb{E}[X_n^2] \mathbb{E}[X_s^2]
+= \sigma^4 \sum_{n,s}
+\cos^2 \left( \frac{2\pi kn}{N} \right)
+\cos^2 \left( \frac{2\pi ls}{N} \right)
+= \frac{\sigma^4 N^2}{4}
+\quad 
+\]
+
+
+\noindent
+The second term of the parenthesis leads to study cases where $n = s$ and $m = t$:
+\[
+\sum_{n,m}
+\cos \frac{2\pi kn}{N}
+\cos \frac{2\pi km}{N}
+\cos \frac{2\pi ln}{N}
+\cos \frac{2\pi lm}{N}
+\mathbb{E}[X_n^2]\mathbb{E}[X_m^2]
+\]
+
+\[
+= \sigma^4 \sum_n
+\cos \frac{2\pi kn}{N}
+\cos \frac{2\pi ln}{N}
+\sum_m
+\cos \frac{2\pi km}{N}
+\cos \frac{2\pi lm}{N}
+\]
+
+\[
+= \frac{\sigma^4}{2} 
+\sum_n \cos \frac{2\pi kn}{N} \cos \frac{2\pi ln}{N}
+\sum_m \left[
+\cos \frac{2\pi (l-k)m}{N} +
+\cos \frac{2\pi (l+k)m}{N}
+\right]
+\]
+
+\[
+= \frac{\sigma^4 N}{2}
+\sum_n \cos \frac{2\pi kn}{N} \cos \frac{2\pi ln}{N}
+\delta_{lk}
+= \frac{\sigma^4 N^2}{4} \delta_{lk}
+\quad 
+\]
+
+
+\noindent
+The third and last term of the parenthesis leads to study cases where $n = t$ and $m = s$:
+\[
+\sum_{n,m}
+\cos \frac{2\pi kn}{N}
+\cos \frac{2\pi km}{N}
+\cos \frac{2\pi ln}{N}
+\cos \frac{2\pi lt}{N}
+\mathbb{E}[X_n^2]\mathbb{E}[X_m^2]
+= \frac{\sigma^4 N^2 \delta_{l,k}}{4}
+\quad \text{(same method as 2nd term)}
+\]
+
+\noindent
+Finally, we have
+\[
+\mathbb{E}[A(f_k)^2 A(f_l)^2]
+= \frac{\sigma^4 N^2}{4} (1 + 2\delta_{l,k})
+\]
+
+\noindent
+The same method gives us:
+\[
+\mathbb{E}[B(f_k)^2 B(f_l)^2]
+= \frac{\sigma^4 N^2}{4} (1 + 2\delta_{l,k})
+\]
+
+\noindent
+We can compute the covariance of $|J(f_k)|^2$ using what we did above:
+\[
+\operatorname{cov}(|J(f_k)|^2, |J(f_l)|^2)
+= \mathbb{E}[|J(f_k)|^2 |J(f_l)|^2]
+- \mathbb{E}[|J(f_k)|^2] \mathbb{E}[|J(f_l)|^2]
+\]
+
+\[
+= \frac{1}{N^2} \mathbb{E}[A(f_k)^2 A(f_l)^2
++ B(f_k)^2 B(f_l)^2
++ A(f_k)^2 B(f_l)^2
++ B(f_k)^2 A(f_l)^2]
+- \sigma^4
+\]
+
+\[
+= \frac{1}{N^2}
+\left(
+\frac{\sigma^4 N^2}{4}(1 + 2\delta_{l,k})
++ \frac{\sigma^4 N^2}{4}(1 + 2\delta_{l,k})
++ \frac{\sigma^4 N^2}{4}
++ \frac{\sigma^4 N^2}{4}
+\right)
+- \sigma^4
+\]
+
+\[
+\text{i.e.} \quad
+\operatorname{cov}(|J(f_k)|^2, |J(f_l)|^2)
+= \sigma^4 (1 + \delta_{l,k}) - \sigma^4
+\]
+
+In particular, for $l \neq k$, 
+$\operatorname{cov}(|J(f_k)|^2, |J(f_l)|^2) = 0$. 
+As there is no correlation between the $|J(f_k)|^2$, 
+\uline{it explains the randomness in the periodogram}. 
+No pattern can be extracted from white noise.
 
 \end{solution}
 
