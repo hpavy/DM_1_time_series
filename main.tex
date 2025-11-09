@@ -6,8 +6,8 @@
 
 \title{Assignment 1 (ML for TS) - MVA}
 \author{
-Firstname Lastname \email{youremail1@mail.com} \\ % student 1
-Firstname Lastname \email{youremail2@mail.com} % student 2
+Hugo Pavy \email{hugo.pavy@etu.minesparis.psl.eu} \\ % student 1
+Tom Mariani \email{tom.mariani68@gmail.com} % student 2
 }
 
 \begin{document}
@@ -51,7 +51,7 @@ Show that there exists $\lambda_{\max}$ such that the minimizer of~\eqref{eq:las
 \begin{solution}
 
 
-Let $\lambda_{\max} = 2 \|^tXy\|$
+Let $\lambda_{\max} = \|^tXy\|_2$
 
 Let $\epsilon > 0$, we assume that there exists $\beta_{min}\in\RR^p $ with $\|\beta_{min}\|_2 > 0$,  s.t 
 
@@ -65,7 +65,7 @@ We want to highlight a contraction because
 \end{equation}
 
 
-In fact by developing the left term and using that $\norm{.}_1\ge \norm{.}_2$
+In fact by developing the left term, replacing $\lambda_{max}$, and using that $\norm{.}_1\ge \norm{.}_2$
 
 \begin{equation}
 \frac{1}{2}\norm{y-X\beta_{min}}^2_2+ \lambda_{max}\norm{\beta_{min}}_1 \ge \frac{1}{2} (\norm{y}_2^2 + \norm{X\beta_{min}}_2^2 - 2\langle y, X\beta_{min}\rangle) +  \|^tXy\| \norm{\beta_{min}}_2^2 
@@ -73,12 +73,13 @@ In fact by developing the left term and using that $\norm{.}_1\ge \norm{.}_2$
 
 Inside the product scalar, we transpose the matrix $X$ and use Cauchy-Schwarz, 
 \begin{equation}
-\ge \frac{1}{2} (\norm{y}_2^2 + \norm{X\beta_{min}}_2^2 - 2\|^tXy\|\|\beta_{min}\|) +  \|^tXy\| \norm{\beta_{min}}_2^2 
+\ge \frac{1}{2} (\norm{y}_2^2 + \norm{X\beta_{min}}_2^2 - 2\|^tXy\|\|\beta_{min}\|) +  \|^tXy\| \norm{\beta_{min}}_2^2 \\
+= \frac{1}{2} (\norm{y}_2^2 + \norm{X\beta_{min}}_2^2)
 \end{equation}
 
-Or $\norm{X\beta_{min}}^2_2 \ge 0$ and by assumption $\|\beta_{min}\|_2 > 0$,
+Or $\norm{X\beta_{min}}^2_2 > 0$ because by assumption $\|\beta_{min}\|_2 > 0$ (we can assume $X \not = 0_{\RR^{n\times p}}$ ),
 
-We have a contraction, $\|\beta_{min}\|_2 = 0$, and therefore $\beta_{min} = 0_{\RR^p}$
+We have the contradiction (3) as we wanted, $\|\beta_{min}\|_2 = 0$, and therefore $\beta_{min} = 0_{\RR^p}$
 
 For a larger $\lambda > \lambda_{\max}$, all inequalities hold and there is also $\beta_{min} = 0_{\RR^p}$
 
@@ -135,7 +136,7 @@ Finally, according to question 1, there exists $\lambda_{max}$ such that the spa
 Because our sparse coding problem is a lasso regression, we have:
 
 \begin{equation}
-\lambda_{max}= \norm{X^Ty}_\infty
+\lambda_{max}= \norm{X^Ty}_2
 \end{equation}
 
 \end{solution}
@@ -287,28 +288,28 @@ Thus $|J(f^{(N)})|^2$ is an asymptotically unbiased estimator of $S(f)$
 \begin{figure}
     \centering
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/autocovariance_200.png}}
     \centerline{Autocovariance ($N=200$)}
     \end{minipage}
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/autocovariance_500.png}}
     \centerline{Autocovariance ($N=500$)}
     \end{minipage}
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/autocovariance_1000.png}}
     \centerline{Autocovariance ($N=1000$)}
     \end{minipage}
     \vskip1em
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/periodogram_200.png}}
     \centerline{Periodogram ($N=200$)}
     \end{minipage}
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/periodogram_500.png}}
     \centerline{Periodogram ($N=500$)}
     \end{minipage}
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/periodogram_1000.png}}
     \centerline{Periodogram ($N=1000$)}
     \end{minipage}
     \vskip1em
@@ -319,6 +320,14 @@ Thus $|J(f^{(N)})|^2$ is an asymptotically unbiased estimator of $S(f)$
 \end{exercise}
 
 \begin{solution}
+
+    \begin{itemize}
+    \item The first thing to notice is that we are close to the theoretical solution of Q1, i.e the standard deviation for $\tau=0$, which is the case here $(\sigma = 1)$ 
+    and 0 elsewhere. The second thing to notice is that the standard deviation decreases with the number of timepoints (or the sampling frequency depending on how we see it) 
+    which is a good sign to approach $\gamma(\tau)$ with $\hat \gamma(\tau)$ 
+    \item The periodogram seems quite consistent with the number of timepoints, average value of 1 and standard deviation of 1 also.
+        
+    \end{itemize}
     
 \end{solution}
 
@@ -565,21 +574,24 @@ piche
 \begin{figure}
     \centering
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/barlett_200.png}}
     \centerline{Periodogram ($N=200$)}
     \end{minipage}
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/barlett_500.png}}
     \centerline{Periodogram ($N=500$)}
     \end{minipage}
     \begin{minipage}[t]{0.3\textwidth}
-    \centerline{\includegraphics[width=\textwidth]{example-image-golden}}
+    \centerline{\includegraphics[width=\textwidth]{images/barlett_1000.png}}
     \centerline{Periodogram ($N=1000$)}
     \end{minipage}
     \vskip1em
     \caption{Barlett's periodograms of a Gaussian white noise (see Question~\ref{q:barlett}).}
     \label{fig:barlett}
 \end{figure}
+
+These graphs show a better standard deviation compared to Q6.
+This is coherent with the estimation of Barlett, indeed, we choose $K=5$ and the standard deviation went from 1 to $1/\sqrt{5} \approx 0.4  $
 
 \end{solution}
 \section{Data study}
